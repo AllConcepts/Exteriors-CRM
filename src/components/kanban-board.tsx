@@ -7,6 +7,7 @@ import { JOB_STAGES, STAGE_ORDER, type JobStage } from "@/lib/job-stages";
 
 interface Job {
   id: string;
+  contact_id: string | null;
   customer_name: string;
   customer_phone: string | null;
   customer_email: string | null;
@@ -440,12 +441,22 @@ export default function KanbanBoard() {
                         </div>
                       )}
                     </dl>
-                    <button
-                      onClick={() => setIsEditing(true)}
-                      className="mt-4 w-full rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
-                    >
-                      Edit Job
-                    </button>
+                    <div className="mt-4 flex gap-2">
+                      <button
+                        onClick={() => setIsEditing(true)}
+                        className="flex-1 rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+                      >
+                        Edit Job
+                      </button>
+                      {selectedJob.contact_id && (
+                        <a
+                          href={`/dashboard/contacts/${selectedJob.contact_id}`}
+                          className="flex-1 rounded-lg border border-blue-300 bg-blue-50 px-4 py-2 text-center text-sm font-medium text-blue-700 hover:bg-blue-100"
+                        >
+                          View Profile
+                        </a>
+                      )}
+                    </div>
                   </div>
                 )}
               </div>
