@@ -2,24 +2,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { notFound } from "next/navigation";
 import { updateLeadStatus, updateLead } from "@/app/actions/leads";
-
-const statusColors: Record<string, string> = {
-  new: "bg-blue-100 text-blue-700",
-  contacted: "bg-yellow-100 text-yellow-700",
-  appointment_set: "bg-green-100 text-green-700",
-  not_interested: "bg-red-100 text-red-700",
-  not_home: "bg-slate-100 text-slate-700",
-  sold: "bg-emerald-100 text-emerald-700",
-};
-
-const statusLabels: Record<string, string> = {
-  new: "New",
-  contacted: "Contacted",
-  appointment_set: "Appointment Set",
-  not_interested: "Not Interested",
-  not_home: "Not Home",
-  sold: "Sold",
-};
+import { LEAD_STATUSES, STATUS_BADGE_CLASSES } from "@/lib/lead-statuses";
 
 export default async function LeadDetailPage({
   params,
@@ -59,10 +42,10 @@ export default async function LeadDetailPage({
           </h1>
           <span
             className={`rounded-full px-3 py-1 text-sm font-medium ${
-              statusColors[lead.status] || "bg-slate-100 text-slate-600"
+              STATUS_BADGE_CLASSES[lead.status] || "bg-slate-100 text-slate-600"
             }`}
           >
-            {statusLabels[lead.status] || lead.status}
+            {LEAD_STATUSES[lead.status as keyof typeof LEAD_STATUSES]?.label || lead.status}
           </span>
         </div>
         <p className="text-sm text-slate-500">
@@ -84,7 +67,7 @@ export default async function LeadDetailPage({
           Update Status
         </h2>
         <div className="flex flex-wrap gap-2">
-          {Object.entries(statusLabels).map(([value, label]) => (
+          {Object.entries(LEAD_STATUSES).map(([value, { label }]) => (
             <form key={value} action={updateLeadStatus}>
               <input type="hidden" name="id" value={lead.id} />
               <input type="hidden" name="status" value={value} />
