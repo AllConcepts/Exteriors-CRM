@@ -1,6 +1,24 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import { LEAD_STATUSES, STATUS_BADGE_CLASSES } from "@/lib/lead-statuses";
+
+// Status badge colors
+const statusColors: Record<string, string> = {
+  new: "bg-blue-100 text-blue-700",
+  contacted: "bg-yellow-100 text-yellow-700",
+  appointment_set: "bg-green-100 text-green-700",
+  not_interested: "bg-red-100 text-red-700",
+  not_home: "bg-slate-100 text-slate-700",
+  sold: "bg-emerald-100 text-emerald-700",
+};
+
+const statusLabels: Record<string, string> = {
+  new: "New",
+  contacted: "Contacted",
+  appointment_set: "Appointment Set",
+  not_interested: "Not Interested",
+  not_home: "Not Home",
+  sold: "Sold",
+};
 
 export default async function CanvassingPage({
   searchParams,
@@ -32,23 +50,12 @@ export default async function CanvassingPage({
             Door-to-door leads — {leads?.length ?? 0} total
           </p>
         </div>
-        <div className="flex gap-2">
-          <Link
-            href="/dashboard/canvassing/map"
-            className="flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm hover:bg-slate-50"
-          >
-            <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
-            </svg>
-            Map View
-          </Link>
-          <Link
-            href="/dashboard/canvassing/new"
-            className="rounded-lg bg-orange-500 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-orange-600"
-          >
-            + New Lead
-          </Link>
-        </div>
+        <Link
+          href="/dashboard/canvassing/new"
+          className="rounded-lg bg-orange-500 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-orange-600"
+        >
+          + New Lead
+        </Link>
       </div>
 
       {/* Status filter tabs */}
@@ -63,7 +70,7 @@ export default async function CanvassingPage({
         >
           All
         </Link>
-        {Object.entries(LEAD_STATUSES).map(([value, { label }]) => (
+        {Object.entries(statusLabels).map(([value, label]) => (
           <Link
             key={value}
             href={`/dashboard/canvassing?status=${value}`}
@@ -122,10 +129,10 @@ export default async function CanvassingPage({
                   <td className="px-4 py-3">
                     <span
                       className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                        STATUS_BADGE_CLASSES[lead.status] || "bg-slate-100 text-slate-600"
+                        statusColors[lead.status] || "bg-slate-100 text-slate-600"
                       }`}
                     >
-                      {LEAD_STATUSES[lead.status as keyof typeof LEAD_STATUSES]?.label || lead.status}
+                      {statusLabels[lead.status] || lead.status}
                     </span>
                   </td>
                   <td className="px-4 py-3 text-slate-500">
@@ -163,20 +170,12 @@ export default async function CanvassingPage({
           <p className="mt-1 text-sm text-slate-500">
             Start canvassing and create your first lead.
           </p>
-          <div className="mt-4 flex justify-center gap-3">
-            <Link
-              href="/dashboard/canvassing/map"
-              className="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
-            >
-              Open Map
-            </Link>
-            <Link
-              href="/dashboard/canvassing/new"
-              className="rounded-lg bg-orange-500 px-4 py-2 text-sm font-semibold text-white hover:bg-orange-600"
-            >
-              + New Lead
-            </Link>
-          </div>
+          <Link
+            href="/dashboard/canvassing/new"
+            className="mt-4 inline-block rounded-lg bg-orange-500 px-4 py-2 text-sm font-semibold text-white hover:bg-orange-600"
+          >
+            + New Lead
+          </Link>
         </div>
       )}
     </div>
